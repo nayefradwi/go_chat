@@ -1,6 +1,8 @@
 package main
 
-import "gochat/config"
+import (
+	"gochat/config"
+)
 
 func main() {
 	config.SetUpEnvironment()

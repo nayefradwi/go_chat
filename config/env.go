@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	ADDRESS_KEY = "HOST_ADDRESS"
-	PORT_KEY    = "PORT"
+	ADDRESS       = "HOST_ADDRESS"
+	DB_CONNECTION = "DATABASE_CONNECTION"
 )
 
 func SetUpEnvironment() {

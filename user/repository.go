@@ -1,6 +1,9 @@
 package user
 
-import "gochat/errorHandling"
+import (
+	"github.com/jackc/pgx/v4/pgxpool"
+	"gochat/errorHandling"
+)
 
 type IUserRepo interface {
 	GetUserById(id int) (User, *errorHandling.BaseError)
@@ -9,7 +12,7 @@ type IUserRepo interface {
 }
 
 type UserRepo struct {
-	// todo: take a db connection pointer
+	Db *pgxpool.Pool
 }
 
 func (repo UserRepo) GetUserById(id int) (User, *errorHandling.BaseError) {

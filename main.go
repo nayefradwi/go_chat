@@ -10,6 +10,7 @@ import (
 func main() {
 	config.SetUpEnvironment()
 	dbPool := config.SetUpDatabaseConnection()
+	defer dbPool.Close()
 	r := config.SetupServer(dbPool)
 	address := os.Getenv(config.ADDRESS)
 	log.Printf("server starting on: %s", address)

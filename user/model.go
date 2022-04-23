@@ -4,7 +4,7 @@ type email string
 type password string
 
 type User struct {
-	Id       string   `json:"id"`
+	Id       int      `json:"id"`
 	Username string   `json:"username"`
 	About    string   `json:"about"`
 	Dp       string   `json:"dp"`

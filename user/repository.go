@@ -1,8 +1,10 @@
 package user
 
 import (
-	"github.com/jackc/pgx/v4/pgxpool"
+	"context"
 	"gochat/errorHandling"
+
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type IUserRepo interface {
@@ -16,12 +18,19 @@ type UserRepo struct {
 }
 
 func (repo UserRepo) GetUserById(id int) (User, *errorHandling.BaseError) {
-	return User{}, nil
+	user := User{}
+	row := repo.Db.QueryRow(context.Background(), "SELECT id, username, about, dp FROM users WHERE id=$1", id)
+	err := row.Scan(&user.Id, &user.Username, &user.About, &user.Dp)
+	if err != nil {
+		return User{}, errorHandling.NewBadRequest("no user found with this id")
+	}
+	return user, nil
 }
 
 func (repo UserRepo) Login(userEmail email, userPassword password) (User, *errorHandling.BaseError) {
 	return User{}, nil
 }
+
 func (repo UserRepo) Register(User) (User, *errorHandling.BaseError) {
 	return User{}, nil
 }

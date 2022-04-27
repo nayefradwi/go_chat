@@ -18,8 +18,20 @@ func NewUserService(userRepo IUserRepo) UserService {
 }
 
 func (service UserService) Login(w http.ResponseWriter, r *http.Request) {
-
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		goChatUtil.WriteErrorResponse(w, errorHandling.NewInternalServerError())
+		return
+	}
+	authUser, loginErr := service.userRepo.Login(user.Email, user.Password)
+	if loginErr != nil {
+		goChatUtil.WriteErrorResponse(w, loginErr)
+		return
+	}
+	json.NewEncoder(w).Encode(authUser)
 }
+
 func (service UserService) Register(w http.ResponseWriter, r *http.Request) {
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -27,15 +39,16 @@ func (service UserService) Register(w http.ResponseWriter, r *http.Request) {
 		goChatUtil.WriteErrorResponse(w, errorHandling.NewInternalServerError())
 		return
 	}
-	user, registrationErr := service.userRepo.Register(user)
+	registrationErr := service.userRepo.Register(user)
 	if registrationErr != nil {
 		goChatUtil.WriteErrorResponse(w, registrationErr)
 		return
 	}
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(make(map[string]string))
 }
 
 func (service UserService) GetUserById(w http.ResponseWriter, r *http.Request) {
+	// todo: missing getting id from auth middleware
 	user, err := service.userRepo.GetUserById(1)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, err)

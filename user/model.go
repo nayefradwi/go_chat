@@ -8,3 +8,7 @@ type User struct {
 	Email    string `json:"email,omitempty"`
 	Password string `json:"password,omitempty"`
 }
+
+type AuthenticatedUser struct {
+	AccessToken string `json:"accessToken"`
+}

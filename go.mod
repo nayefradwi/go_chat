@@ -8,6 +8,8 @@ require (
 	github.com/joho/godotenv v1.4.0
 )
 
+require github.com/golang-jwt/jwt v3.2.2+incompatible
+
 require (
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.12.0 // indirect

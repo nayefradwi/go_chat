@@ -8,6 +8,7 @@ import (
 const (
 	ADDRESS       = "HOST_ADDRESS"
 	DB_CONNECTION = "DATABASE_CONNECTION"
+	SECRET        = "SECRET"
 )
 
 func SetUpEnvironment() {

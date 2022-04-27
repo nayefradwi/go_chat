@@ -23,5 +23,5 @@ func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
 	userRouter.Post("/login", userService.Login)
 	userRouter.Post("/register", userService.Register)
 	userRouter.Get("/{id}", userService.GetUserById)
-	r.Mount("/user", userRouter)
+	r.Mount("/users", userRouter)
 }

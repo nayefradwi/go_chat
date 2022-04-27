@@ -41,3 +41,10 @@ func NewValidationError(validationErrors ...ValidationFieldError) *BaseError {
 		Status:  http.StatusForbidden,
 	}
 }
+
+func NewFieldValidationError(field string, message string) ValidationFieldError {
+	return ValidationFieldError{
+		Field:   field,
+		Message: message,
+	}
+}

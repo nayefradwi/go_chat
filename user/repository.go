@@ -2,14 +2,15 @@ package user
 
 import (
 	"context"
+	"gochat/auth"
 	"gochat/errorHandling"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type IUserRepo interface {
-	GetUserById(id int) (User, *errorHandling.BaseError)
-	Login(userEmail email, userPassword password) (User, *errorHandling.BaseError)
+	GetUserById(int) (User, *errorHandling.BaseError)
+	Login(string, string) (User, *errorHandling.BaseError)
 	Register(User) (User, *errorHandling.BaseError)
 }
 
@@ -27,10 +28,22 @@ func (repo UserRepo) GetUserById(id int) (User, *errorHandling.BaseError) {
 	return user, nil
 }
 
-func (repo UserRepo) Login(userEmail email, userPassword password) (User, *errorHandling.BaseError) {
+func (repo UserRepo) Login(userEmail string, userPassword string) (User, *errorHandling.BaseError) {
 	return User{}, nil
 }
 
-func (repo UserRepo) Register(User) (User, *errorHandling.BaseError) {
+func (repo UserRepo) Register(user User) (User, *errorHandling.BaseError) {
+	validationErr := checkUserIsValid(user)
+	if validationErr != nil {
+		return User{}, validationErr
+	}
+	hash, hashErr := auth.HashPassword(user.Password)
+	if hashErr != nil {
+		return User{}, errorHandling.NewInternalServerError()
+	}
+	_, err := repo.Db.Exec(context.Background(), "INSERT INTO users(username, password, email, created_at) VALUES($1, $2, $3, NOW())", user.Username, hash, user.Email)
+	if err != nil {
+		return User{}, errorHandling.NewBadRequest(err.Error())
+	}
 	return User{}, nil
 }

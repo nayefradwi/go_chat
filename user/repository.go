@@ -59,7 +59,7 @@ func (repo UserRepo) Register(user User) *errorHandling.BaseError {
 	if hashErr != nil {
 		return errorHandling.NewInternalServerError()
 	}
-	_, err := repo.Db.Exec(context.Background(), "INSERT INTO users(username, password, email, created_at) VALUES($1, $2, $3, NOW())", user.Username, hash, user.Email)
+	_, err := repo.Db.Exec(context.Background(), "INSERT INTO users(username, password, email, created_at, dp, about) VALUES($1, $2, $3, NOW(), $4, $5)", user.Username, hash, user.Email, user.Dp, user.About)
 	if err != nil {
 		return errorHandling.NewBadRequest(err.Error())
 	}

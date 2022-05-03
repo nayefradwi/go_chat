@@ -7,4 +7,16 @@ CREATE TABLE IF NOT EXISTS users (
     dp TEXT NOT NULL,
     last_online TIMESTAMP,
     created_at TIMESTAMP NOT NULL
-)
+);
+
+CREATE TABLE IF NOT EXISTS friend_requests (
+    id serial PRIMARY KEY,
+    user_requesting_id INT NOT NULL,
+    user_requested_id  INT NOT NULL,
+    status_id   INT DEFAULT 0,
+    created_at TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_requesting_id)
+        REFERENCES users(id),
+    FOREIGN KEY (user_requested_id)
+        REFERENCES users(id)
+);

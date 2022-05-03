@@ -10,6 +10,7 @@ type IFriendRequestRepo interface {
 	AcceptRequest(requestId int) *errorHandling.BaseError
 	GetFriendRequests(userId int) ([]FriendRequest, *errorHandling.BaseError)
 	SendFriendRequest(userRequestingId int, userRequestedId int) *errorHandling.BaseError
+	RejectFriendRequest(requestId int) *errorHandling.BaseError
 }
 
 type FriendRequestRepo struct {
@@ -23,5 +24,9 @@ func (repo FriendRequestRepo) GetFriendRequests(userId int) ([]FriendRequest, *e
 	return make([]FriendRequest, 0), nil
 }
 func (repo FriendRequestRepo) SendFriendRequest(userRequestingId int, userRequestedId int) *errorHandling.BaseError {
+	return nil
+}
+
+func (repo FriendRequestRepo) RejectFriendRequest(requestId int) *errorHandling.BaseError {
 	return nil
 }

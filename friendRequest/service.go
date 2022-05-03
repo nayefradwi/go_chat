@@ -26,3 +26,7 @@ func (service FriendRequestService) GetFriendRequests(w http.ResponseWriter, r *
 func (service FriendRequestService) SendFriendRequest(w http.ResponseWriter, r *http.Request) {
 
 }
+
+func (service FriendRequestService) RejectRequest(w http.ResponseWriter, r *http.Request) {
+
+}

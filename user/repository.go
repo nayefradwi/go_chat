@@ -4,7 +4,6 @@ import (
 	"context"
 	"gochat/auth"
 	"gochat/errorHandling"
-	"log"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -30,7 +29,6 @@ func (repo UserRepo) GetUserById(id int) (User, *errorHandling.BaseError) {
 }
 
 func (repo UserRepo) Login(userEmail string, userPassword string) (AuthenticatedUser, *errorHandling.BaseError) {
-	log.Printf("email: %s, password: %s", userEmail, userPassword)
 	user := User{}
 	row := repo.Db.QueryRow(context.Background(), "SELECT id, username, about, dp, password FROM users WHERE email=$1", userEmail)
 	err := row.Scan(&user.Id, &user.Username, &user.About, &user.Dp, &user.Password)

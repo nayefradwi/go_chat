@@ -14,14 +14,15 @@ func GenerateToken(userId int) (string, error) {
 	return token.SignedString([]byte(config.Secret))
 }
 
-func DecodeAccessToken(tokenString string) (string, *errorHandling.BaseError) {
+func DecodeAccessToken(tokenString string) (int, *errorHandling.BaseError) {
 	if isParsed, token := verifyToken(tokenString); isParsed {
 		claims := parseToken(token)
-		if val, ok := claims["id"].(string); ok {
-			return val, nil
+		if val, ok := claims["id"]; ok {
+			userId := int(val.(float64))
+			return userId, nil
 		}
 	}
-	return "", errorHandling.NewUnAuthorizedError()
+	return -1, errorHandling.NewUnAuthorizedError()
 }
 
 func verifyToken(tokenString string) (bool, *jwt.Token) {

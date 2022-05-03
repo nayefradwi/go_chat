@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"gochat/auth"
 	"gochat/errorHandling"
 	"gochat/goChatUtil"
 	"net/http"
@@ -48,8 +49,8 @@ func (service UserService) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (service UserService) GetUserById(w http.ResponseWriter, r *http.Request) {
-	// todo: missing getting id from auth middleware
-	user, err := service.userRepo.GetUserById(1)
+	userId := r.Context().Value(auth.UserIdKey{}).(int)
+	user, err := service.userRepo.GetUserById(userId)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, err)
 		return

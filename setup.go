@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gochat/auth"
 	"gochat/friendRequest"
 	"gochat/user"
 
@@ -24,7 +25,7 @@ func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
 	})
 	userRouter.Post("/login", userService.Login)
 	userRouter.Post("/register", userService.Register)
-	userRouter.Get("/user", userService.GetUserById)
+	userRouter.With(auth.AuthorizeHeaderMiddleware).Get("/user", userService.GetUserById)
 	r.Mount("/users", userRouter)
 }
 

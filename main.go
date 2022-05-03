@@ -4,7 +4,6 @@ import (
 	"gochat/config"
 	"log"
 	"net/http"
-	"os"
 )
 
 func main() {
@@ -12,7 +11,7 @@ func main() {
 	dbPool := config.SetUpDatabaseConnection()
 	defer dbPool.Close()
 	r := SetupServer(dbPool)
-	address := os.Getenv(config.ADDRESS)
+	address := config.Address
 	log.Printf("server starting on: %s", address)
 	http.ListenAndServe(address, r)
 }

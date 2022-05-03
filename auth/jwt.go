@@ -2,7 +2,7 @@ package auth
 
 import (
 	"gochat/config"
-	"os"
+	"gochat/errorHandling"
 
 	"github.com/golang-jwt/jwt"
 )
@@ -11,7 +11,33 @@ func GenerateToken(userId int) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id": userId,
 	})
-	return token.SignedString([]byte(os.Getenv(config.SECRET)))
+	return token.SignedString([]byte(config.Secret))
 }
 
-// todo: missing method - decode
+func DecodeAccessToken(tokenString string) (string, *errorHandling.BaseError) {
+	if isParsed, token := verifyToken(tokenString); isParsed {
+		claims := parseToken(token)
+		if val, ok := claims["id"].(string); ok {
+			return val, nil
+		}
+	}
+	return "", errorHandling.NewUnAuthorizedError()
+}
+
+func verifyToken(tokenString string) (bool, *jwt.Token) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errorHandling.NewUnAuthorizedError()
+		}
+		return []byte(config.Secret), nil
+	})
+	return err == nil && token.Valid, token
+}
+
+func parseToken(token *jwt.Token) jwt.MapClaims {
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok {
+		return claims
+	}
+	return jwt.MapClaims{}
+}

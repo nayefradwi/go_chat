@@ -23,7 +23,7 @@ func (repo FriendRequestRepo) AcceptRequest(requestId int) *errorHandling.BaseEr
 }
 func (repo FriendRequestRepo) GetFriendRequests(userId int) ([]FriendRequestDetails, *errorHandling.BaseError) {
 	friendRequests := make([]FriendRequestDetails, 0)
-	rows, err := repo.Db.Query(context.Background(), GET_FRIEND_REQUESTS, userId)
+	rows, err := repo.Db.Query(context.Background(), GET_FRIEND_REQUESTS, userId, StatusPending)
 	if err != nil {
 		return friendRequests, errorHandling.NewBadRequest("failed to load friend requests")
 	}

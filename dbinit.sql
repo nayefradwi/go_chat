@@ -20,3 +20,5 @@ CREATE TABLE IF NOT EXISTS friend_requests (
     FOREIGN KEY (user_requested_id)
         REFERENCES users(id)
 );
+
+CREATE UNIQUE INDEX user_request ON friend_requests(user_requesting_id, user_requested_id)

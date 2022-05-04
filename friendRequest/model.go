@@ -12,3 +12,10 @@ type FriendRequest struct {
 	UserRequestedId  int `json:"userRequestedId"`
 	Status           int `json:"status"`
 }
+
+type FriendRequestDetails struct {
+	Id       int    `json:"id"`
+	Username string `json:"username"`
+	About    string `json:"about,omitempty"`
+	Dp       string `json:"dp,omitempty"`
+}

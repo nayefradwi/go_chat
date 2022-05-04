@@ -31,6 +31,7 @@ func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
 
 func setupFriendRequestsRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
 	friendRequestRouter := chi.NewMux()
+	friendRequestRouter.Use(auth.AuthorizeHeaderMiddleware)
 	friendRequestService := friendrequest.NewFriendRequestService(
 		friendrequest.FriendRequestRepo{
 			Db: dbPool,
@@ -40,5 +41,5 @@ func setupFriendRequestsRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
 	friendRequestRouter.Get("/", friendRequestService.GetFriendRequests)
 	friendRequestRouter.Post("/", friendRequestService.SendFriendRequest)
 	friendRequestRouter.Post("/{id}/rejection", friendRequestService.RejectRequest)
-	r.Mount("/friendRequests", friendRequestRouter)
+	r.Mount("/friend-requests", friendRequestRouter)
 }

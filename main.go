@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"gochat/config"
 	"log"
 	"net/http"
@@ -8,7 +9,8 @@ import (
 
 func main() {
 	config.SetUpEnvironment()
-	dbPool := config.SetUpDatabaseConnection()
+	appCtx := context.Background()
+	dbPool := config.SetUpDatabaseConnection(appCtx)
 	defer dbPool.Close()
 	r := SetupServer(dbPool)
 	address := config.Address

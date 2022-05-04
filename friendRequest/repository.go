@@ -8,22 +8,23 @@ import (
 )
 
 type IFriendRequestRepo interface {
-	AcceptRequest(requestId int) *errorHandling.BaseError
-	GetFriendRequests(userId int) ([]FriendRequestDetails, *errorHandling.BaseError)
-	SendFriendRequest(userRequestingId int, userRequestedId int) *errorHandling.BaseError
-	RejectFriendRequest(requestId int) *errorHandling.BaseError
+	AcceptRequest(ctx context.Context, requestId int) *errorHandling.BaseError
+	GetFriendRequests(ctx context.Context, userId int) ([]FriendRequestDetails, *errorHandling.BaseError)
+	SendFriendRequest(ctx context.Context, userRequestingId int, userRequestedId int) *errorHandling.BaseError
+	RejectFriendRequest(ctx context.Context, requestId int) *errorHandling.BaseError
 }
 
 type FriendRequestRepo struct {
 	Db *pgxpool.Pool
 }
 
-func (repo FriendRequestRepo) AcceptRequest(requestId int) *errorHandling.BaseError {
+func (repo FriendRequestRepo) AcceptRequest(ctx context.Context, requestId int) *errorHandling.BaseError {
+	repo.Db.Exec(ctx, "")
 	return nil
 }
-func (repo FriendRequestRepo) GetFriendRequests(userId int) ([]FriendRequestDetails, *errorHandling.BaseError) {
+func (repo FriendRequestRepo) GetFriendRequests(ctx context.Context, userId int) ([]FriendRequestDetails, *errorHandling.BaseError) {
 	friendRequests := make([]FriendRequestDetails, 0)
-	rows, err := repo.Db.Query(context.Background(), GET_FRIEND_REQUESTS, userId, StatusPending)
+	rows, err := repo.Db.Query(ctx, GET_FRIEND_REQUESTS, userId, StatusPending)
 	if err != nil {
 		return friendRequests, errorHandling.NewBadRequest("failed to load friend requests")
 	}
@@ -43,14 +44,14 @@ func (repo FriendRequestRepo) GetFriendRequests(userId int) ([]FriendRequestDeta
 	return friendRequests, nil
 }
 
-func (repo FriendRequestRepo) SendFriendRequest(userRequestingId int, userRequestedId int) *errorHandling.BaseError {
-	_, err := repo.Db.Exec(context.Background(), CREATE_FRIEND_REQUEST, userRequestingId, userRequestedId)
+func (repo FriendRequestRepo) SendFriendRequest(ctx context.Context, userRequestingId int, userRequestedId int) *errorHandling.BaseError {
+	_, err := repo.Db.Exec(ctx, CREATE_FRIEND_REQUEST, userRequestingId, userRequestedId)
 	if err != nil {
 		return errorHandling.NewBadRequest("failed to send friend request")
 	}
 	return nil
 }
 
-func (repo FriendRequestRepo) RejectFriendRequest(requestId int) *errorHandling.BaseError {
+func (repo FriendRequestRepo) RejectFriendRequest(ctx context.Context, requestId int) *errorHandling.BaseError {
 	return nil
 }

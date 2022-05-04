@@ -24,8 +24,9 @@ func (service FriendRequestService) AcceptRequest(w http.ResponseWriter, r *http
 }
 
 func (service FriendRequestService) GetFriendRequests(w http.ResponseWriter, r *http.Request) {
-	userId := r.Context().Value(auth.UserIdKey{}).(int)
-	friendRequests, err := service.repo.GetFriendRequests(userId)
+	ctx := r.Context()
+	userId := ctx.Value(auth.UserIdKey{}).(int)
+	friendRequests, err := service.repo.GetFriendRequests(ctx, userId)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, err)
 		return
@@ -34,10 +35,11 @@ func (service FriendRequestService) GetFriendRequests(w http.ResponseWriter, r *
 }
 
 func (service FriendRequestService) SendFriendRequest(w http.ResponseWriter, r *http.Request) {
-	userRequestingId := r.Context().Value(auth.UserIdKey{}).(int)
+	ctx := r.Context()
+	userRequestingId := ctx.Value(auth.UserIdKey{}).(int)
 	userRequestedIdString := r.URL.Query().Get("requested-user")
 	userRequestedId, _ := strconv.Atoi(userRequestedIdString)
-	err := service.repo.SendFriendRequest(userRequestingId, userRequestedId)
+	err := service.repo.SendFriendRequest(ctx, userRequestingId, userRequestedId)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, err)
 		return

@@ -19,13 +19,14 @@ func NewUserService(userRepo IUserRepo) UserService {
 }
 
 func (service UserService) Login(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, errorHandling.NewInternalServerError())
 		return
 	}
-	authUser, loginErr := service.userRepo.Login(user.Email, user.Password)
+	authUser, loginErr := service.userRepo.Login(ctx, user.Email, user.Password)
 	if loginErr != nil {
 		goChatUtil.WriteErrorResponse(w, loginErr)
 		return
@@ -34,13 +35,14 @@ func (service UserService) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (service UserService) Register(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, errorHandling.NewInternalServerError())
 		return
 	}
-	registrationErr := service.userRepo.Register(user)
+	registrationErr := service.userRepo.Register(ctx, user)
 	if registrationErr != nil {
 		goChatUtil.WriteErrorResponse(w, registrationErr)
 		return
@@ -49,8 +51,9 @@ func (service UserService) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (service UserService) GetUserById(w http.ResponseWriter, r *http.Request) {
-	userId := r.Context().Value(auth.UserIdKey{}).(int)
-	user, err := service.userRepo.GetUserById(userId)
+	ctx := r.Context()
+	userId := ctx.Value(auth.UserIdKey{}).(int)
+	user, err := service.userRepo.GetUserById(ctx, userId)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, err)
 		return

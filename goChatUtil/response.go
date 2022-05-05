@@ -12,7 +12,17 @@ func WriteErrorResponse(w http.ResponseWriter, err *errorHandling.BaseError) {
 	w.Write(response)
 }
 
-func WriteEmptyCreatedResponse(w http.ResponseWriter) {
+func WriteEmptyCreatedResponse(w http.ResponseWriter, m string) {
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(make(map[string]string))
+	body := make(map[string]string)
+	body["status"] = "OK"
+	body["message"] = m
+	json.NewEncoder(w).Encode(body)
+}
+
+func WriteEmptySuccessResponse(w http.ResponseWriter, m string) {
+	body := make(map[string]string)
+	body["status"] = "OK"
+	body["message"] = m
+	json.NewEncoder(w).Encode(body)
 }

@@ -8,18 +8,21 @@ import (
 )
 
 type IFriendRequestRepo interface {
-	AcceptRequest(ctx context.Context, requestId int) *errorHandling.BaseError
+	AcceptRequest(ctx context.Context, userId int, requestId int) *errorHandling.BaseError
 	GetFriendRequests(ctx context.Context, userId int) ([]FriendRequestDetails, *errorHandling.BaseError)
 	SendFriendRequest(ctx context.Context, userRequestingId int, userRequestedId int) *errorHandling.BaseError
-	RejectFriendRequest(ctx context.Context, requestId int) *errorHandling.BaseError
+	RejectFriendRequest(ctx context.Context, userId int, requestId int) *errorHandling.BaseError
 }
 
 type FriendRequestRepo struct {
 	Db *pgxpool.Pool
 }
 
-func (repo FriendRequestRepo) AcceptRequest(ctx context.Context, requestId int) *errorHandling.BaseError {
-	repo.Db.Exec(ctx, "")
+func (repo FriendRequestRepo) AcceptRequest(ctx context.Context, userId int, requestId int) *errorHandling.BaseError {
+	tag, err := repo.Db.Exec(ctx, MODIFY_FRIEND_REQUEST, StatusAccepted, userId, requestId, StatusPending)
+	if err != nil || tag.RowsAffected() == 0 {
+		return errorHandling.NewBadRequest("failed to accept friend request")
+	}
 	return nil
 }
 func (repo FriendRequestRepo) GetFriendRequests(ctx context.Context, userId int) ([]FriendRequestDetails, *errorHandling.BaseError) {
@@ -52,6 +55,10 @@ func (repo FriendRequestRepo) SendFriendRequest(ctx context.Context, userRequest
 	return nil
 }
 
-func (repo FriendRequestRepo) RejectFriendRequest(ctx context.Context, requestId int) *errorHandling.BaseError {
+func (repo FriendRequestRepo) RejectFriendRequest(ctx context.Context, userId int, requestId int) *errorHandling.BaseError {
+	tag, err := repo.Db.Exec(ctx, MODIFY_FRIEND_REQUEST, StatusRejected, userId, requestId, StatusPending)
+	if err != nil || tag.RowsAffected() == 0 {
+		return errorHandling.NewBadRequest("failed to reject friend request")
+	}
 	return nil
 }

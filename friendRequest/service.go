@@ -6,6 +6,8 @@ import (
 	"gochat/goChatUtil"
 	"net/http"
 	"strconv"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type FriendRequestService struct {
@@ -18,9 +20,17 @@ func NewFriendRequestService(friendRequestRepo FriendRequestRepo) FriendRequestS
 	}
 }
 
-// todo: accept friend requests
 func (service FriendRequestService) AcceptRequest(w http.ResponseWriter, r *http.Request) {
-
+	ctx := r.Context()
+	userId := ctx.Value(auth.UserIdKey{}).(int)
+	requestIdString := chi.URLParam(r, "id")
+	requestId, _ := strconv.Atoi(requestIdString)
+	err := service.repo.AcceptRequest(ctx, userId, requestId)
+	if err != nil {
+		goChatUtil.WriteErrorResponse(w, err)
+		return
+	}
+	goChatUtil.WriteEmptySuccessResponse(w, "friend request accepted")
 }
 
 func (service FriendRequestService) GetFriendRequests(w http.ResponseWriter, r *http.Request) {
@@ -44,9 +54,18 @@ func (service FriendRequestService) SendFriendRequest(w http.ResponseWriter, r *
 		goChatUtil.WriteErrorResponse(w, err)
 		return
 	}
-	goChatUtil.WriteEmptyCreatedResponse(w)
+	goChatUtil.WriteEmptyCreatedResponse(w, "friend request sent")
 }
 
 func (service FriendRequestService) RejectRequest(w http.ResponseWriter, r *http.Request) {
-
+	ctx := r.Context()
+	userId := ctx.Value(auth.UserIdKey{}).(int)
+	requestIdString := chi.URLParam(r, "id")
+	requestId, _ := strconv.Atoi(requestIdString)
+	err := service.repo.RejectFriendRequest(ctx, userId, requestId)
+	if err != nil {
+		goChatUtil.WriteErrorResponse(w, err)
+		return
+	}
+	goChatUtil.WriteEmptySuccessResponse(w, "friend request rejected")
 }

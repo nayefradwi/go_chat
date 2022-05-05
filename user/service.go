@@ -47,7 +47,7 @@ func (service UserService) Register(w http.ResponseWriter, r *http.Request) {
 		goChatUtil.WriteErrorResponse(w, registrationErr)
 		return
 	}
-	goChatUtil.WriteEmptyCreatedResponse(w)
+	goChatUtil.WriteEmptyCreatedResponse(w, "user registered")
 }
 
 func (service UserService) GetUserById(w http.ResponseWriter, r *http.Request) {

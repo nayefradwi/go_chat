@@ -2,8 +2,8 @@ package user
 
 import (
 	"context"
+	"gochat-common/errorHandling"
 	"gochat-user-service/auth"
-	"gochat-user-service/errorHandling"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )

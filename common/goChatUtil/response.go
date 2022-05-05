@@ -2,7 +2,7 @@ package goChatUtil
 
 import (
 	"encoding/json"
-	"gochat-user-service/errorHandling"
+	"gochat/errorHandling"
 	"net/http"
 )
 

@@ -2,8 +2,8 @@ package auth
 
 import (
 	"context"
-	"gochat-user-service/errorHandling"
-	"gochat-user-service/goChatUtil"
+	"gochat-common/errorHandling"
+	"gochat-common/goChatUtil"
 	"net/http"
 	"strings"
 )

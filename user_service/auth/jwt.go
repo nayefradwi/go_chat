@@ -2,7 +2,7 @@ package auth
 
 import (
 	"gochat-user-service/config"
-	"gochat-user-service/errorHandling"
+	"gochat-common/errorHandling"
 
 	"github.com/golang-jwt/jwt"
 )

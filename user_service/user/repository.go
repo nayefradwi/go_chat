@@ -20,7 +20,7 @@ type UserRepo struct {
 
 func (repo UserRepo) GetUserById(ctx context.Context, id int) (User, *errorHandling.BaseError) {
 	user := User{}
-	row := repo.Db.QueryRow(ctx, "SELECT id, username, about, dp FROM users WHERE id=$1", id)
+	row := repo.Db.QueryRow(ctx, GET_USER_BY_ID, id)
 	err := row.Scan(&user.Id, &user.Username, &user.About, &user.Dp)
 	if err != nil {
 		return User{}, errorHandling.NewBadRequest("no user found with this id")
@@ -30,7 +30,7 @@ func (repo UserRepo) GetUserById(ctx context.Context, id int) (User, *errorHandl
 
 func (repo UserRepo) Login(ctx context.Context, userEmail string, userPassword string) (AuthenticatedUser, *errorHandling.BaseError) {
 	user := User{}
-	row := repo.Db.QueryRow(ctx, "SELECT id, username, about, dp, password FROM users WHERE email=$1", userEmail)
+	row := repo.Db.QueryRow(ctx, LOGIN, userEmail)
 	err := row.Scan(&user.Id, &user.Username, &user.About, &user.Dp, &user.Password)
 	if err != nil {
 		return AuthenticatedUser{}, errorHandling.NewBadRequest(err.Error())
@@ -57,7 +57,7 @@ func (repo UserRepo) Register(ctx context.Context, user User) *errorHandling.Bas
 	if hashErr != nil {
 		return errorHandling.NewInternalServerError()
 	}
-	_, err := repo.Db.Exec(ctx, "INSERT INTO users(username, password, email, created_at, dp, about) VALUES($1, $2, $3, NOW(), $4, $5)", user.Username, hash, user.Email, user.Dp, user.About)
+	_, err := repo.Db.Exec(ctx, REGISTER, user.Username, hash, user.Email, user.Dp, user.About)
 	if err != nil {
 		return errorHandling.NewBadRequest(err.Error())
 	}

@@ -11,6 +11,7 @@ type IFriendRequestRepo interface {
 	GetFriendRequests(ctx context.Context, userId int) ([]FriendRequestDetails, *errorHandling.BaseError)
 	SendFriendRequest(ctx context.Context, userRequestingId int, userRequestedId int) *errorHandling.BaseError
 	RejectFriendRequest(ctx context.Context, userId int, requestId int) *errorHandling.BaseError
+	GetSentFriendRequests(ctx context.Context, userId int) ([]FriendRequestDetails, *errorHandling.BaseError)
 }
 
 type FriendRequestRepo struct {
@@ -60,4 +61,26 @@ func (repo FriendRequestRepo) RejectFriendRequest(ctx context.Context, userId in
 		return errorHandling.NewBadRequest("failed to reject friend request")
 	}
 	return nil
+}
+
+func (repo FriendRequestRepo) GetSentFriendRequests(ctx context.Context, userId int) ([]FriendRequestDetails, *errorHandling.BaseError) {
+	friendRequests := make([]FriendRequestDetails, 0)
+	rows, err := repo.Db.Query(ctx, GET_SENT_FRIEND_REQUESTS, userId, StatusPending)
+	if err != nil {
+		return friendRequests, errorHandling.NewBadRequest("failed to load friend requests")
+	}
+	for rows.Next() {
+		var id int
+		var username, about, dp string
+		err := rows.Scan(&id, &username, &about, &dp)
+		if err == nil {
+			friendRequests = append(friendRequests, FriendRequestDetails{
+				Id:       id,
+				Username: username,
+				About:    about,
+				Dp:       dp,
+			})
+		}
+	}
+	return friendRequests, nil
 }

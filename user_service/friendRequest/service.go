@@ -69,3 +69,14 @@ func (service FriendRequestService) RejectRequest(w http.ResponseWriter, r *http
 	}
 	goChatUtil.WriteEmptySuccessResponse(w, "friend request rejected")
 }
+
+func (service FriendRequestService) GetSentFriendRequests(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	userId := ctx.Value(auth.UserIdKey{}).(int)
+	friendRequests, err := service.repo.GetSentFriendRequests(ctx, userId)
+	if err != nil {
+		goChatUtil.WriteErrorResponse(w, err)
+		return
+	}
+	json.NewEncoder(w).Encode(friendRequests)
+}

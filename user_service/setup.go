@@ -41,5 +41,6 @@ func setupFriendRequestsRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
 	friendRequestRouter.Get("/", friendRequestService.GetFriendRequests)
 	friendRequestRouter.Post("/", friendRequestService.SendFriendRequest)
 	friendRequestRouter.Post("/{id}/rejection", friendRequestService.RejectRequest)
+	friendRequestRouter.Get("/sent-requests", friendRequestService.GetSentFriendRequests)
 	r.Mount("/friend-requests", friendRequestRouter)
 }

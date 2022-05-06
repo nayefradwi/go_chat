@@ -2,9 +2,8 @@ package friendrequest
 
 import (
 	"context"
-	"gochat-user-service/errorHandling"
-
 	"github.com/jackc/pgx/v4/pgxpool"
+	"gochat-common/errorHandling"
 )
 
 type IFriendRequestRepo interface {

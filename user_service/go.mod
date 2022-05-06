@@ -1,4 +1,4 @@
-module gochat-user-service
+module github.com/nayefradwi/go_chat/user_service
 
 go 1.18
 
@@ -6,7 +6,10 @@ require (
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/jackc/pgx/v4 v4.16.0
 	github.com/joho/godotenv v1.4.0
+	github.com/nayefradwi/go_chat/common v0.0.0
 )
+
+replace github.com/nayefradwi/go_chat/common v0.0.0 => ../common
 
 require github.com/golang-jwt/jwt v3.2.2+incompatible
 

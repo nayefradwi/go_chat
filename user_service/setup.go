@@ -1,9 +1,9 @@
 package main
 
 import (
-	"gochat-user-service/auth"
-	"gochat-user-service/friendRequest"
-	"gochat-user-service/user"
+	"github.com/nayefradwi/go_chat/user_service/auth"
+	"github.com/nayefradwi/go_chat/user_service/friendRequest"
+	"github.com/nayefradwi/go_chat/user_service/user"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

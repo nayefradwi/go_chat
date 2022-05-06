@@ -2,9 +2,9 @@ package user
 
 import (
 	"encoding/json"
-	"gochat-common/errorHandling"
-	"gochat-common/goChatUtil"
-	"gochat-user-service/auth"
+	"github.com/nayefradwi/go_chat/common/errorHandling"
+	"github.com/nayefradwi/go_chat/common/goChatUtil"
+	"github.com/nayefradwi/go_chat/user_service/auth"
 	"net/http"
 )
 

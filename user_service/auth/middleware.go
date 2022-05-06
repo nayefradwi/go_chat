@@ -2,8 +2,8 @@ package auth
 
 import (
 	"context"
-	"gochat-common/errorHandling"
-	"gochat-common/goChatUtil"
+	"github.com/nayefradwi/go_chat/common/errorHandling"
+	"github.com/nayefradwi/go_chat/common/goChatUtil"
 	"net/http"
 	"strings"
 )

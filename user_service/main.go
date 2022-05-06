@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"gochat-user-service/config"
+	"github.com/nayefradwi/go_chat/user_service/config"
 	"log"
 	"net/http"
 )

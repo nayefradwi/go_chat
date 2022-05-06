@@ -1,7 +1,7 @@
 package user
 
 import (
-	"gochat-common/errorHandling"
+	"github.com/nayefradwi/go_chat/common/errorHandling"
 	"net/mail"
 )
 

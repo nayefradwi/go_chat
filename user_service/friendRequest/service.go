@@ -2,8 +2,8 @@ package friendrequest
 
 import (
 	"encoding/json"
-	"gochat-common/goChatUtil"
-	"gochat-user-service/auth"
+	"github.com/nayefradwi/go_chat/common/goChatUtil"
+	"github.com/nayefradwi/go_chat/user_service/auth"
 	"net/http"
 	"strconv"
 

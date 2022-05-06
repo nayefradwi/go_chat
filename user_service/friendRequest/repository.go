@@ -3,7 +3,7 @@ package friendrequest
 import (
 	"context"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"gochat-common/errorHandling"
+	"github.com/nayefradwi/go_chat/common/errorHandling"
 )
 
 type IFriendRequestRepo interface {

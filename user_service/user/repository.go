@@ -2,8 +2,11 @@ package user
 
 import (
 	"context"
+	"encoding/json"
+
 	"github.com/nayefradwi/go_chat/common/errorHandling"
 	"github.com/nayefradwi/go_chat/user_service/auth"
+	"github.com/nayefradwi/go_chat/user_service/producer"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -15,7 +18,8 @@ type IUserRepo interface {
 }
 
 type UserRepo struct {
-	Db *pgxpool.Pool
+	Db           *pgxpool.Pool
+	UserProducer producer.IUserProducer
 }
 
 func (repo UserRepo) GetUserById(ctx context.Context, id int) (User, *errorHandling.BaseError) {
@@ -61,5 +65,7 @@ func (repo UserRepo) Register(ctx context.Context, user User) *errorHandling.Bas
 	if err != nil {
 		return errorHandling.NewBadRequest(err.Error())
 	}
+	data, _ := json.Marshal(user)
+	repo.UserProducer.CreateJsonEvent(producer.UserRegisteredTopic, data)
 	return nil
 }

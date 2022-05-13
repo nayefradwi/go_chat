@@ -1,8 +1,10 @@
 package main
 
 import (
+	"github.com/Shopify/sarama"
 	"github.com/nayefradwi/go_chat/user_service/auth"
 	"github.com/nayefradwi/go_chat/user_service/friendRequest"
+	"github.com/nayefradwi/go_chat/user_service/producer"
 	"github.com/nayefradwi/go_chat/user_service/user"
 
 	"github.com/go-chi/chi/v5"
@@ -10,18 +12,20 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-func SetupServer(dbPool *pgxpool.Pool) *chi.Mux {
+func SetupServer(dbPool *pgxpool.Pool, producerConn *sarama.SyncProducer) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.SetHeader("Content-Type", "application/json"))
-	setupUserRoute(r, dbPool)
+	setupUserRoute(r, dbPool, producerConn)
 	setupFriendRequestsRoute(r, dbPool)
 	return r
 }
 
-func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
+func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool, producerConn *sarama.SyncProducer) {
 	userRouter := chi.NewMux()
+	userProducer := producer.NewUserProducer(*producerConn)
 	userService := user.NewUserService(user.UserRepo{
-		Db: dbPool,
+		Db:           dbPool,
+		UserProducer: userProducer,
 	})
 	userRouter.Post("/login", userService.Login)
 	userRouter.Post("/register", userService.Register)

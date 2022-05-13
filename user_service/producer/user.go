@@ -33,9 +33,9 @@ func (producer UserProducer) CreateJsonEvent(topic string, value []byte) {
 		Partition: partion,
 		Value:     sarama.ByteEncoder(value),
 	})
-	log.Printf("record sent with partion: %d\nOffset: %d\n", resultPartion, offSet)
+	log.Printf("record sent with partion: %d; Offset: %d", resultPartion, offSet)
 	if err != nil {
-		log.Printf("Error: %s\n", err.Error())
+		log.Printf("record sent with error: %s", err.Error())
 	}
 }
 

@@ -66,6 +66,6 @@ func (repo UserRepo) Register(ctx context.Context, user User) *errorHandling.Bas
 		return errorHandling.NewBadRequest(err.Error())
 	}
 	data, _ := json.Marshal(user)
-	repo.UserProducer.CreateJsonEvent(producer.UserRegisteredTopic, data)
+	go repo.UserProducer.CreateJsonEvent(producer.UserRegisteredTopic, data)
 	return nil
 }

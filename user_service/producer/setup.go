@@ -7,9 +7,7 @@ import (
 	"github.com/Shopify/sarama"
 )
 
-// todo: create an interface / struct for producers that can be injected in services
-// todo: go routines and channels should be in mind, so sending events / records should be on separate threads
-func NewProducer(brokerList []string) sarama.SyncProducer {
+func newProducer(brokerList []string) sarama.SyncProducer {
 	config := sarama.NewConfig()
 	config.ClientID = "gochat-user-service"
 	config.Producer.RequiredAcks = sarama.WaitForLocal // Wait for all in-sync replicas to ack the message

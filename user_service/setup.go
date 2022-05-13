@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/Shopify/sarama"
 	"github.com/nayefradwi/go_chat/user_service/auth"
+	"github.com/nayefradwi/go_chat/user_service/config"
 	"github.com/nayefradwi/go_chat/user_service/friendRequest"
 	"github.com/nayefradwi/go_chat/user_service/producer"
 	"github.com/nayefradwi/go_chat/user_service/user"
@@ -12,17 +12,23 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-func SetupServer(dbPool *pgxpool.Pool, producerConn *sarama.SyncProducer) *chi.Mux {
-	r := chi.NewRouter()
-	r.Use(middleware.SetHeader("Content-Type", "application/json"))
-	setupUserRoute(r, dbPool, producerConn)
-	setupFriendRequestsRoute(r, dbPool)
-	return r
+type ServerProducers struct {
+	userProducer producer.IUserProducer
 }
 
-func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool, producerConn *sarama.SyncProducer) {
+func SetupServer(dbPool *pgxpool.Pool) (*chi.Mux, *ServerProducers) {
+	producers := &ServerProducers{}
+	r := chi.NewRouter()
+	r.Use(middleware.SetHeader("Content-Type", "application/json"))
+	setupUserRoute(r, dbPool, producers)
+	setupFriendRequestsRoute(r, dbPool)
+	return r, producers
+}
+
+func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool, producers *ServerProducers) {
 	userRouter := chi.NewMux()
-	userProducer := producer.NewUserProducer(*producerConn)
+	userProducer := producer.NewUserProducer([]string{config.Broker0})
+	producers.userProducer = userProducer
 	userService := user.NewUserService(user.UserRepo{
 		Db:           dbPool,
 		UserProducer: userProducer,
@@ -47,4 +53,10 @@ func setupFriendRequestsRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
 	friendRequestRouter.Post("/{id}/rejection", friendRequestService.RejectRequest)
 	friendRequestRouter.Get("/sent-requests", friendRequestService.GetSentFriendRequests)
 	r.Mount("/friend-requests", friendRequestRouter)
+}
+
+func (producers *ServerProducers) close() {
+	if userProducer, ok := producers.userProducer.(*producer.UserProducer); ok {
+		userProducer.Close()
+	}
 }

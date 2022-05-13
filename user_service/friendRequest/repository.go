@@ -2,8 +2,10 @@ package friendrequest
 
 import (
 	"context"
+
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nayefradwi/go_chat/common/errorHandling"
+	"github.com/nayefradwi/go_chat/user_service/producer"
 )
 
 type IFriendRequestRepo interface {
@@ -15,7 +17,8 @@ type IFriendRequestRepo interface {
 }
 
 type FriendRequestRepo struct {
-	Db *pgxpool.Pool
+	Db       *pgxpool.Pool
+	Producer producer.IProducer
 }
 
 func (repo FriendRequestRepo) AcceptRequest(ctx context.Context, userId int, requestId int) *errorHandling.BaseError {

@@ -13,7 +13,8 @@ import (
 )
 
 type ServerProducers struct {
-	userProducer producer.IUserProducer
+	userProducer          producer.IProducer
+	friendRequestProducer producer.IProducer
 }
 
 func SetupServer(dbPool *pgxpool.Pool) (*chi.Mux, *ServerProducers) {
@@ -21,17 +22,17 @@ func SetupServer(dbPool *pgxpool.Pool) (*chi.Mux, *ServerProducers) {
 	r := chi.NewRouter()
 	r.Use(middleware.SetHeader("Content-Type", "application/json"))
 	setupUserRoute(r, dbPool, producers)
-	setupFriendRequestsRoute(r, dbPool)
+	setupFriendRequestsRoute(r, dbPool, producers)
 	return r, producers
 }
 
 func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool, producers *ServerProducers) {
 	userRouter := chi.NewMux()
-	userProducer := producer.NewUserProducer([]string{config.Broker0})
+	userProducer := producer.NewProducer([]string{config.Broker0})
 	producers.userProducer = userProducer
 	userService := user.NewUserService(user.UserRepo{
-		Db:           dbPool,
-		UserProducer: userProducer,
+		Db:       dbPool,
+		Producer: userProducer,
 	})
 	userRouter.Post("/login", userService.Login)
 	userRouter.Post("/register", userService.Register)
@@ -39,12 +40,15 @@ func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool, producers *ServerProducers
 	r.Mount("/users", userRouter)
 }
 
-func setupFriendRequestsRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
+func setupFriendRequestsRoute(r *chi.Mux, dbPool *pgxpool.Pool, producers *ServerProducers) {
 	friendRequestRouter := chi.NewMux()
+	friendRequestProducer := producer.NewProducer([]string{config.Broker0})
+	producers.friendRequestProducer = friendRequestProducer
 	friendRequestRouter.Use(auth.AuthorizeHeaderMiddleware)
 	friendRequestService := friendrequest.NewFriendRequestService(
 		friendrequest.FriendRequestRepo{
-			Db: dbPool,
+			Db:       dbPool,
+			Producer: friendRequestProducer,
 		},
 	)
 	friendRequestRouter.Post("/{id}/acceptance", friendRequestService.AcceptRequest)
@@ -56,7 +60,6 @@ func setupFriendRequestsRoute(r *chi.Mux, dbPool *pgxpool.Pool) {
 }
 
 func (producers *ServerProducers) close() {
-	if userProducer, ok := producers.userProducer.(*producer.UserProducer); ok {
-		userProducer.Close()
-	}
+	producers.userProducer.Close()
+	producers.friendRequestProducer.Close()
 }

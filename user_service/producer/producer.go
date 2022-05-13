@@ -6,27 +6,24 @@ import (
 	"github.com/Shopify/sarama"
 )
 
-const (
-	UserRegisteredTopic = "userRegistered"
-)
-
-type IUserProducer interface {
+type IProducer interface {
 	CreateJsonEvent(topic string, value []byte)
 	getPartition() int32
 	Close()
 }
 
-type UserProducer struct {
+type Producer struct {
 	producerConn sarama.SyncProducer
 }
 
-func NewUserProducer(brokers []string) *UserProducer {
-	producer := newProducer(brokers)
-	return &UserProducer{
+func NewProducer(brokers []string) *Producer {
+	producer := newProducerConn(brokers)
+	return &Producer{
 		producerConn: producer,
 	}
 }
-func (producer UserProducer) CreateJsonEvent(topic string, value []byte) {
+
+func (producer Producer) CreateJsonEvent(topic string, value []byte) {
 	partion := producer.getPartition()
 	resultPartion, offSet, err := producer.producerConn.SendMessage(&sarama.ProducerMessage{
 		Topic:     topic,
@@ -39,10 +36,10 @@ func (producer UserProducer) CreateJsonEvent(topic string, value []byte) {
 	}
 }
 
-func (UserProducer) getPartition() int32 {
+func (Producer) getPartition() int32 {
 	return 1
 }
 
-func (producer *UserProducer) Close() {
+func (producer *Producer) Close() {
 	producer.producerConn.Close()
 }

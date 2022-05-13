@@ -18,8 +18,8 @@ type IUserRepo interface {
 }
 
 type UserRepo struct {
-	Db           *pgxpool.Pool
-	UserProducer producer.IUserProducer
+	Db       *pgxpool.Pool
+	Producer producer.IProducer
 }
 
 func (repo UserRepo) GetUserById(ctx context.Context, id int) (User, *errorHandling.BaseError) {
@@ -66,6 +66,6 @@ func (repo UserRepo) Register(ctx context.Context, user User) *errorHandling.Bas
 		return errorHandling.NewBadRequest(err.Error())
 	}
 	data, _ := json.Marshal(user)
-	go repo.UserProducer.CreateJsonEvent(producer.UserRegisteredTopic, data)
+	go repo.Producer.CreateJsonEvent(producer.UserRegisteredTopic, data)
 	return nil
 }

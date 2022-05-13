@@ -7,7 +7,7 @@ import (
 	"github.com/Shopify/sarama"
 )
 
-func newProducer(brokerList []string) sarama.SyncProducer {
+func newProducerConn(brokerList []string) sarama.SyncProducer {
 	config := sarama.NewConfig()
 	config.ClientID = "gochat-user-service"
 	config.Producer.RequiredAcks = sarama.WaitForLocal // Wait for all in-sync replicas to ack the message

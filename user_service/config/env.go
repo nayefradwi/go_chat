@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strings"
 
@@ -23,9 +22,7 @@ var (
 )
 
 func SetUpEnvironment() {
-	if err := godotenv.Load(".local.env"); err != nil {
-		log.Fatalf("failed to load environment %s", err)
-	}
+	godotenv.Load(".local.env")
 	Secret = os.Getenv(SECRET)
 	Address = os.Getenv(ADDRESS)
 	DbConnection = os.Getenv(DB_CONNECTION)

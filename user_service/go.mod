@@ -8,10 +8,13 @@ require (
 	github.com/joho/godotenv v1.4.0
 )
 
-require github.com/golang-jwt/jwt v3.2.2+incompatible
+require (
+	github.com/Shopify/sarama v1.32.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/nayefradwi/go_chat/common v0.0.0-20220513141843-7d749ba69092
+)
 
 require (
-	github.com/Shopify/sarama v1.32.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/eapache/go-resiliency v1.2.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20180814174437-776d5712da21 // indirect
@@ -24,11 +27,9 @@ require (
 	github.com/jcmturner/gokrb5/v8 v8.4.2 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/klauspost/compress v1.14.4 // indirect
-	github.com/nayefradwi/go_chat/common v0.0.0-20220513141843-7d749ba69092 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 
 require (

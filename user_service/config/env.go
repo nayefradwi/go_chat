@@ -3,22 +3,23 @@ package config
 import (
 	"log"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
 
 const (
-	ADDRESS          = "HOST_ADDRESS"
-	DB_CONNECTION    = "DATABASE_CONNECTION"
-	SECRET           = "SECRET"
-	BROKER_O_ADDRESS = "BROKER_0_ADDRESS"
+	ADDRESS       = "HOST_ADDRESS"
+	DB_CONNECTION = "DATABASE_CONNECTION"
+	SECRET        = "SECRET"
+	BROKER_LIST   = "BROKER_LIST"
 )
 
 var (
 	Secret       string
 	Address      string
 	DbConnection string
-	Broker0      string
+	BrokerList   []string
 )
 
 func SetUpEnvironment() {
@@ -28,5 +29,5 @@ func SetUpEnvironment() {
 	Secret = os.Getenv(SECRET)
 	Address = os.Getenv(ADDRESS)
 	DbConnection = os.Getenv(DB_CONNECTION)
-	Broker0 = os.Getenv(BROKER_O_ADDRESS)
+	BrokerList = strings.Split(os.Getenv(BROKER_LIST), ";")
 }

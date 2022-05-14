@@ -1,0 +1,11 @@
+version: '1'
+services:
+  user_service:
+    build: 
+      context: .
+      dockerfile: ./user_service/dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./user_service/.local.env
+    

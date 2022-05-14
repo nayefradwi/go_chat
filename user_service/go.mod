@@ -6,10 +6,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/jackc/pgx/v4 v4.16.0
 	github.com/joho/godotenv v1.4.0
-	github.com/nayefradwi/go_chat/common v0.0.0
 )
-
-replace github.com/nayefradwi/go_chat/common v0.0.0 => ../common
 
 require github.com/golang-jwt/jwt v3.2.2+incompatible
 
@@ -27,6 +24,7 @@ require (
 	github.com/jcmturner/gokrb5/v8 v8.4.2 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/klauspost/compress v1.14.4 // indirect
+	github.com/nayefradwi/go_chat/common v0.0.0-20220513141843-7d749ba69092 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect

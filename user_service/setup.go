@@ -28,7 +28,7 @@ func SetupServer(dbPool *pgxpool.Pool) (*chi.Mux, *ServerProducers) {
 
 func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool, producers *ServerProducers) {
 	userRouter := chi.NewMux()
-	userProducer := producer.NewProducer([]string{config.Broker0})
+	userProducer := producer.NewProducer(config.BrokerList)
 	producers.userProducer = userProducer
 	userService := user.NewUserService(user.UserRepo{
 		Db:       dbPool,
@@ -42,7 +42,7 @@ func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool, producers *ServerProducers
 
 func setupFriendRequestsRoute(r *chi.Mux, dbPool *pgxpool.Pool, producers *ServerProducers) {
 	friendRequestRouter := chi.NewMux()
-	friendRequestProducer := producer.NewProducer([]string{config.Broker0})
+	friendRequestProducer := producer.NewProducer(config.BrokerList)
 	producers.friendRequestProducer = friendRequestProducer
 	friendRequestRouter.Use(auth.AuthorizeHeaderMiddleware)
 	friendRequestService := friendrequest.NewFriendRequestService(

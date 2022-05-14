@@ -1,0 +1,20 @@
+FROM golang:1.18-alpine3.15
+
+WORKDIR /app
+RUN mkdir common
+COPY ./common ./common
+
+WORKDIR /src
+
+
+COPY ./user_service/go.mod ./
+COPY ./user_service/go.sum ./
+
+RUN go mod download
+
+COPY ./user_service .
+
+RUN go build -o main
+
+EXPOSE 3000
+CMD [ "/app/src/main" ]

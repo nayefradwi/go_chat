@@ -1,0 +1,4 @@
+.dockerignore
+tmp
+.air.toml
+*.env

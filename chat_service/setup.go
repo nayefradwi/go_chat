@@ -1,5 +1,7 @@
 package main
 
-func setupServer() {
+import "go.mongodb.org/mongo-driver/mongo"
+
+func setupServer(db *mongo.Database) {
 
 }

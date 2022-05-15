@@ -11,9 +11,12 @@ const (
 )
 
 type Message struct {
-	SentBy      int
-	Content     string
-	ContentType string
-	SentAt      time.Time
-	IsRead      bool
+	// todo: missing id
+	// todo: missing chat id (index)
+	SentBy      int       `json:"sentBy"`
+	Content     string    `json:"content"`
+	ContentType string    `json:"contentType"`
+	SentAt      time.Time `json:"sentAt"`
+	IsRead      bool      `json:"isRead"`
+	ReadAt      time.Time `json:"readAt"`
 }

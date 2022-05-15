@@ -1,7 +1,14 @@
 package chat
 
-import "github.com/nayefradwi/go_chat/chat_service/message"
-
 type Chat struct {
-	LastMessageSent message.Message
+	// todo: missing chat id
+	User1 User
+	User2 User
+}
+
+type User struct {
+	RefId    int
+	Username string
+	About    string
+	Dp       string
 }

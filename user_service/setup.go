@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/nayefradwi/go_chat/user_service/auth"
 	"github.com/nayefradwi/go_chat/user_service/config"
 	"github.com/nayefradwi/go_chat/user_service/friendRequest"
 	"github.com/nayefradwi/go_chat/user_service/producer"
@@ -10,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v4/pgxpool"
+	userServiceMiddleware "github.com/nayefradwi/go_chat/user_service/middleware"
 )
 
 type ServerProducers struct {
@@ -36,7 +36,7 @@ func setupUserRoute(r *chi.Mux, dbPool *pgxpool.Pool, producers *ServerProducers
 	})
 	userRouter.Post("/login", userService.Login)
 	userRouter.Post("/register", userService.Register)
-	userRouter.With(auth.AuthorizeHeaderMiddleware).Get("/user", userService.GetUserById)
+	userRouter.With(userServiceMiddleware.AuthorizeHeaderMiddleware).Get("/user", userService.GetUserById)
 	r.Mount("/users", userRouter)
 }
 
@@ -44,7 +44,7 @@ func setupFriendRequestsRoute(r *chi.Mux, dbPool *pgxpool.Pool, producers *Serve
 	friendRequestRouter := chi.NewMux()
 	friendRequestProducer := producer.NewProducer(config.BrokerList)
 	producers.friendRequestProducer = friendRequestProducer
-	friendRequestRouter.Use(auth.AuthorizeHeaderMiddleware)
+	friendRequestRouter.Use(userServiceMiddleware.AuthorizeHeaderMiddleware)
 	friendRequestService := friendrequest.NewFriendRequestService(
 		friendrequest.FriendRequestRepo{
 			Db:       dbPool,

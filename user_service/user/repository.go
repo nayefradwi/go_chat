@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/nayefradwi/go_chat/chat_service/config"
+	"github.com/nayefradwi/go_chat/common/auth"
 	"github.com/nayefradwi/go_chat/common/errorHandling"
-	"github.com/nayefradwi/go_chat/user_service/auth"
 	"github.com/nayefradwi/go_chat/user_service/producer"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -42,7 +43,7 @@ func (repo UserRepo) Login(ctx context.Context, userEmail string, userPassword s
 	if isCorrectPassword := auth.ComparePassword(userPassword, user.Password); !isCorrectPassword {
 		return AuthenticatedUser{}, errorHandling.NewBadRequest("password is incorrect")
 	}
-	token, jwtErr := auth.GenerateToken(user.Id)
+	token, jwtErr := auth.GenerateToken(user.Id, config.Secret)
 	if jwtErr != nil {
 		return AuthenticatedUser{}, errorHandling.NewInternalServerError()
 	}

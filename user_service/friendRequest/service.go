@@ -3,7 +3,7 @@ package friendrequest
 import (
 	"encoding/json"
 	"github.com/nayefradwi/go_chat/common/goChatUtil"
-	"github.com/nayefradwi/go_chat/user_service/auth"
+	"github.com/nayefradwi/go_chat/user_service/middleware"
 	"net/http"
 	"strconv"
 
@@ -22,7 +22,7 @@ func NewFriendRequestService(friendRequestRepo FriendRequestRepo) FriendRequestS
 
 func (service FriendRequestService) AcceptRequest(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userId := ctx.Value(auth.UserIdKey{}).(int)
+	userId := ctx.Value(middleware.UserIdKey{}).(int)
 	requestIdString := chi.URLParam(r, "id")
 	requestId, _ := strconv.Atoi(requestIdString)
 	err := service.repo.AcceptRequest(ctx, userId, requestId)
@@ -35,7 +35,7 @@ func (service FriendRequestService) AcceptRequest(w http.ResponseWriter, r *http
 
 func (service FriendRequestService) GetFriendRequests(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userId := ctx.Value(auth.UserIdKey{}).(int)
+	userId := ctx.Value(middleware.UserIdKey{}).(int)
 	friendRequests, err := service.repo.GetFriendRequests(ctx, userId)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, err)
@@ -46,7 +46,7 @@ func (service FriendRequestService) GetFriendRequests(w http.ResponseWriter, r *
 
 func (service FriendRequestService) SendFriendRequest(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userRequestingId := ctx.Value(auth.UserIdKey{}).(int)
+	userRequestingId := ctx.Value(middleware.UserIdKey{}).(int)
 	userRequestedIdString := r.URL.Query().Get("requested-user")
 	userRequestedId, _ := strconv.Atoi(userRequestedIdString)
 	err := service.repo.SendFriendRequest(ctx, userRequestingId, userRequestedId)
@@ -59,7 +59,7 @@ func (service FriendRequestService) SendFriendRequest(w http.ResponseWriter, r *
 
 func (service FriendRequestService) RejectRequest(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userId := ctx.Value(auth.UserIdKey{}).(int)
+	userId := ctx.Value(middleware.UserIdKey{}).(int)
 	requestIdString := chi.URLParam(r, "id")
 	requestId, _ := strconv.Atoi(requestIdString)
 	err := service.repo.RejectFriendRequest(ctx, userId, requestId)
@@ -72,7 +72,7 @@ func (service FriendRequestService) RejectRequest(w http.ResponseWriter, r *http
 
 func (service FriendRequestService) GetSentFriendRequests(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userId := ctx.Value(auth.UserIdKey{}).(int)
+	userId := ctx.Value(middleware.UserIdKey{}).(int)
 	friendRequests, err := service.repo.GetSentFriendRequests(ctx, userId)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, err)

@@ -1,11 +1,14 @@
-package auth
+package middleware
 
 import (
 	"context"
-	"github.com/nayefradwi/go_chat/common/errorHandling"
-	"github.com/nayefradwi/go_chat/common/goChatUtil"
 	"net/http"
 	"strings"
+
+	"github.com/nayefradwi/go_chat/common/auth"
+	"github.com/nayefradwi/go_chat/common/errorHandling"
+	"github.com/nayefradwi/go_chat/common/goChatUtil"
+	"github.com/nayefradwi/go_chat/user_service/config"
 )
 
 type UserIdKey struct{}
@@ -19,7 +22,7 @@ func AuthorizeHeaderMiddleware(f http.Handler) http.Handler {
 			return
 		}
 		token := tokenSplit[1]
-		userId, err := DecodeAccessToken(token)
+		userId, err := auth.DecodeAccessToken(token, config.Secret)
 		if err != nil {
 			goChatUtil.WriteErrorResponse(w, err)
 			return

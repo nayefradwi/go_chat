@@ -2,9 +2,8 @@ package user
 
 import (
 	"encoding/json"
-	"github.com/nayefradwi/go_chat/common/errorHandling"
-	"github.com/nayefradwi/go_chat/common/goChatUtil"
 	"github.com/nayefradwi/go_chat/user_service/middleware"
+	"github.com/nayefradwi/go_chat_common"
 	"net/http"
 )
 
@@ -23,12 +22,12 @@ func (service UserService) Login(w http.ResponseWriter, r *http.Request) {
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		goChatUtil.WriteErrorResponse(w, errorHandling.NewInternalServerError())
+		gochatcommon.WriteErrorResponse(w, gochatcommon.NewInternalServerError())
 		return
 	}
 	authUser, loginErr := service.userRepo.Login(ctx, user.Email, user.Password)
 	if loginErr != nil {
-		goChatUtil.WriteErrorResponse(w, loginErr)
+		gochatcommon.WriteErrorResponse(w, loginErr)
 		return
 	}
 	json.NewEncoder(w).Encode(authUser)
@@ -39,15 +38,15 @@ func (service UserService) Register(w http.ResponseWriter, r *http.Request) {
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		goChatUtil.WriteErrorResponse(w, errorHandling.NewInternalServerError())
+		gochatcommon.WriteErrorResponse(w, gochatcommon.NewInternalServerError())
 		return
 	}
 	registrationErr := service.userRepo.Register(ctx, user)
 	if registrationErr != nil {
-		goChatUtil.WriteErrorResponse(w, registrationErr)
+		gochatcommon.WriteErrorResponse(w, registrationErr)
 		return
 	}
-	goChatUtil.WriteEmptyCreatedResponse(w, "user registered")
+	gochatcommon.WriteEmptyCreatedResponse(w, "user registered")
 }
 
 func (service UserService) GetUserById(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +54,7 @@ func (service UserService) GetUserById(w http.ResponseWriter, r *http.Request) {
 	userId := ctx.Value(middleware.UserIdKey{}).(int)
 	user, err := service.userRepo.GetUserById(ctx, userId)
 	if err != nil {
-		goChatUtil.WriteErrorResponse(w, err)
+		gochatcommon.WriteErrorResponse(w, err)
 		return
 	}
 	json.NewEncoder(w).Encode(user)

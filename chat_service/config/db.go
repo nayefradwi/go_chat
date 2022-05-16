@@ -18,5 +18,6 @@ func createMongoClient(appCtx context.Context) *mongo.Client {
 	if err != nil {
 		log.Fatalf("failed to connect to database: %s", err.Error())
 	}
+	log.Print("connected to chat_service database successfully")
 	return client
 }

@@ -7,8 +7,8 @@ type Chat struct {
 }
 
 type User struct {
-	RefId    int
-	Username string
-	About    string
-	Dp       string
+	UserRefId int
+	Username  string
+	About     string
+	Dp        string
 }

@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/nayefradwi/go_chat/chat_service/config"
 	"github.com/nayefradwi/go_chat/common/auth"
 	"github.com/nayefradwi/go_chat/common/errorHandling"
+	"github.com/nayefradwi/go_chat/user_service/config"
 	"github.com/nayefradwi/go_chat/user_service/producer"
 
 	"github.com/jackc/pgx/v4/pgxpool"

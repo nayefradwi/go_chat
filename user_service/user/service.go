@@ -2,9 +2,9 @@ package user
 
 import (
 	"encoding/json"
-	"github.com/nayefradwi/go_chat/common/auth"
 	"github.com/nayefradwi/go_chat/common/errorHandling"
 	"github.com/nayefradwi/go_chat/common/goChatUtil"
+	"github.com/nayefradwi/go_chat/user_service/middleware"
 	"net/http"
 )
 
@@ -52,7 +52,7 @@ func (service UserService) Register(w http.ResponseWriter, r *http.Request) {
 
 func (service UserService) GetUserById(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userId := ctx.Value(UserIdKey{}).(int)
+	userId := ctx.Value(middleware.UserIdKey{}).(int)
 	user, err := service.userRepo.GetUserById(ctx, userId)
 	if err != nil {
 		goChatUtil.WriteErrorResponse(w, err)

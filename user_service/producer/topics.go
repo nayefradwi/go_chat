@@ -1,6 +1,6 @@
 package producer
 
 const (
-	FriendRequestAcceptedTopic = "acceptedFriendRequest"
-	UserRegisteredTopic        = "userRegistered"
+	NewFriendshipTopic  = "NewFriendship"
+	UserRegisteredTopic = "userRegistered"
 )

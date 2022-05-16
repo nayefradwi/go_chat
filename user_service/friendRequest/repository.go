@@ -2,7 +2,10 @@ package friendrequest
 
 import (
 	"context"
+	"encoding/json"
+	"log"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nayefradwi/go_chat/common/errorHandling"
 	"github.com/nayefradwi/go_chat/user_service/producer"
@@ -26,6 +29,10 @@ func (repo FriendRequestRepo) AcceptRequest(ctx context.Context, userId int, req
 	if err != nil || tag.RowsAffected() == 0 {
 		return errorHandling.NewBadRequest("failed to accept friend request")
 	}
+	go func() {
+		row := repo.Db.QueryRow(context.Background(), FETCH_USERS_OF_NEW_FRIENDSHIP, requestId, StatusAccepted)
+		repo.produceNewFriendship(row)
+	}()
 	return nil
 }
 func (repo FriendRequestRepo) GetFriendRequests(ctx context.Context, userId int) ([]FriendRequestDetails, *errorHandling.BaseError) {
@@ -86,4 +93,38 @@ func (repo FriendRequestRepo) GetSentFriendRequests(ctx context.Context, userId 
 		}
 	}
 	return friendRequests, nil
+}
+
+func (repo FriendRequestRepo) produceNewFriendship(row pgx.Row) {
+	user1, user2, err := generateNewFriendShipUsersFromQueryRow(row)
+	if err != nil {
+		return
+	}
+	usersMap := make(map[string]FriendRequestDetails)
+	usersMap["user1"] = user1
+	usersMap["user2"] = user2
+	event, _ := json.Marshal(usersMap)
+	repo.Producer.CreateJsonEvent(producer.NewFriendshipTopic, event)
+}
+
+func generateNewFriendShipUsersFromQueryRow(row pgx.Row) (FriendRequestDetails, FriendRequestDetails, error) {
+	var user1Id, user2Id int
+	var user1Username, user2Username, user1About, user2About, user1Dp, user2Dp string
+	err := row.Scan(&user1Id, &user2Id, &user1Username, &user2Username, &user1About, &user2About, &user1Dp, &user2Dp)
+	if err != nil {
+		log.Printf("error scanning new friendship: %s", err.Error())
+		return FriendRequestDetails{}, FriendRequestDetails{}, err
+	}
+	user1, user2 := FriendRequestDetails{
+		UserId:   user1Id,
+		Username: user1Username,
+		About:    user1About,
+		Dp:       user1Dp,
+	}, FriendRequestDetails{
+		UserId:   user2Id,
+		Username: user2Username,
+		About:    user2About,
+		Dp:       user2Dp,
+	}
+	return user1, user2, nil
 }

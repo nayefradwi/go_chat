@@ -1,6 +1,10 @@
 package message
 
-import "time"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 const (
 	TEXT  = iota
@@ -11,12 +15,12 @@ const (
 )
 
 type Message struct {
-	// todo: missing id
-	// todo: missing chat id (index)
-	SentBy      int       `json:"sentBy"`
-	Content     string    `json:"content"`
-	ContentType string    `json:"contentType"`
-	SentAt      time.Time `json:"sentAt"`
-	IsRead      bool      `json:"isRead"`
-	ReadAt      time.Time `json:"readAt"`
+	Id          primitive.ObjectID `json:"id" bson:"_id"`
+	ChatId      primitive.ObjectID `json:"chatId" bson:"chatId"`
+	SentBy      int                `json:"sentBy" bson:"sentBy"`
+	Content     string             `json:"content" bson:"content"`
+	ContentType string             `json:"contentType" bson:"contentType"`
+	SentAt      time.Time          `json:"sentAt" bson:"sentAt"`
+	IsRead      bool               `json:"isRead" bson:"isRead"`
+	ReadAt      time.Time          `json:"readAt" bson:"readAt"`
 }

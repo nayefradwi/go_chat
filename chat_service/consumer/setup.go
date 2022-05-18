@@ -6,8 +6,11 @@ import (
 	"github.com/Shopify/sarama"
 )
 
-func newConsumerConn(brokerList []string) sarama.ConsumerGroup {
+type ConsumerClientKey struct{}
+
+func NewConsumerClient(brokerList []string) sarama.ConsumerGroup {
 	config := sarama.NewConfig()
+	config.Consumer.Offsets.Initial = sarama.OffsetNewest
 	client, err := sarama.NewConsumerGroup(brokerList, "ChatService", config)
 	if err != nil {
 		log.Fatalln("Failed to start Sarama producer:", err)

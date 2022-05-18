@@ -23,7 +23,7 @@ func NewProducer(brokers []string) *Producer {
 	}
 }
 
-func (producer Producer) CreateJsonEvent(topic string, value []byte) {
+func (producer *Producer) CreateJsonEvent(topic string, value []byte) {
 	partion := producer.getPartition()
 	resultPartion, offSet, err := producer.producerConn.SendMessage(&sarama.ProducerMessage{
 		Topic:     topic,

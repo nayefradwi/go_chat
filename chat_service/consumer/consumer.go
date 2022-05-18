@@ -1,7 +1,54 @@
 package consumer
 
-import "github.com/Shopify/sarama"
+import (
+	"context"
+	"log"
 
-func NewConsumer(brokerList []string) sarama.ConsumerGroup {
-	return newConsumerConn(brokerList)
+	"github.com/Shopify/sarama"
+)
+
+type Consumer struct {
+	Client         sarama.ConsumerGroup
+	ConsumedEvents chan []byte
+}
+
+func NewConsumer(ctx context.Context, topics []string, client sarama.ConsumerGroup) *Consumer {
+	eventsChannel := make(chan []byte)
+	consumer := Consumer{
+		Client:         client,
+		ConsumedEvents: eventsChannel,
+	}
+	go processEvents(ctx, &consumer, topics)
+	return &consumer
+}
+
+func processEvents(ctx context.Context, consumer *Consumer, topics []string) {
+	log.Printf("consuming the following topics: %s", topics)
+	for {
+		if ctx.Err() != nil {
+			log.Printf("server context has been cancelled; stopping consumption")
+			return
+		}
+		if err := consumer.Client.Consume(context.Background(), topics, consumer); err != nil {
+			log.Panicf("Error from consumer: %v", err)
+		}
+	}
+}
+
+func (consumer *Consumer) Setup(sarama.ConsumerGroupSession) error {
+	return nil
+}
+
+func (consumer *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
+	close(consumer.ConsumedEvents)
+	return nil
+}
+
+func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	log.Print("consumer claims started")
+	for message := range claim.Messages() {
+		consumer.ConsumedEvents <- message.Value
+		session.MarkMessage(message, "")
+	}
+	return nil
 }

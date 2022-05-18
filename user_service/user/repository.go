@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/nayefradwi/go_chat/user_service/config"
 	"github.com/nayefradwi/go_chat/user_service/producer"
@@ -65,7 +64,7 @@ func (repo UserRepo) Register(ctx context.Context, user User) *gochatcommon.Base
 	if err != nil {
 		return gochatcommon.NewBadRequest(err.Error())
 	}
-	data, _ := json.Marshal(user)
-	go repo.Producer.CreateJsonEvent(producer.UserRegisteredTopic, data)
+	// data, _ := json.Marshal(user)
+	// go repo.Producer.CreateJsonEvent(producer.UserRegisteredTopic, data)
 	return nil
 }

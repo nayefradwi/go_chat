@@ -7,6 +7,7 @@ import (
 
 	"github.com/nayefradwi/go_chat/chat_service/consumer"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -39,12 +40,18 @@ func (repo ChatRepo) getChats(ctx context.Context, userRefId int) []Chat {
 
 func handleConsumedEvent(ctx context.Context, repo *ChatRepo) {
 	for {
+		eventValue := <-repo.Consumer.ConsumedEvents
 		if ctx.Err() != nil {
 			log.Print("chat repo stopped consuming events")
 		}
-		var jsonMap map[string]interface{}
-		message := <-repo.Consumer.ConsumedEvents
-		json.Unmarshal(message, &jsonMap)
-		log.Printf("chat repo received event: %s", jsonMap)
+		var chat Chat
+		json.Unmarshal(eventValue, &chat)
+		// todo: make it idemponent?
+		insertResult, err := repo.ChatCollection.InsertOne(ctx, chat)
+		if err != nil {
+			log.Printf("failed to write to database: %s", err.Error())
+			continue
+		}
+		chat.Id = insertResult.InsertedID.(primitive.ObjectID)
 	}
 }

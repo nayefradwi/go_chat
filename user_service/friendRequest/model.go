@@ -14,8 +14,8 @@ type FriendRequest struct {
 }
 
 type FriendRequestDetails struct {
-	Id       int    `json:"id"`
-	UserId   int    `json:"userId,omitempty"`
+	Id       int    `json:"id,omitempty"`
+	UserId   int    `json:"userRefId,omitempty"`
 	Username string `json:"username"`
 	About    string `json:"about,omitempty"`
 	Dp       string `json:"dp,omitempty"`

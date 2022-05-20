@@ -12,7 +12,7 @@ const (
 	DB_CONNECTION = "DATABASE_CONNECTION"
 	SECRET        = "SECRET"
 	BROKER_LIST   = "BROKER_LIST"
-	DATABASE_NAME = "gochat-chat-service"
+	DATABASE_NAME = "DATABASE_NAME"
 )
 
 var (

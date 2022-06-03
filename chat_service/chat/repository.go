@@ -29,10 +29,17 @@ func NewChatRepo(ctx context.Context, chatCollection *mongo.Collection, consumer
 	return repo
 }
 func (repo ChatRepo) getChats(ctx context.Context, userRefId int) []Chat {
-	var chats []Chat
-	cursor, err := repo.ChatCollection.Find(ctx, bson.D{})
+	chats := make([]Chat, 0)
+
+	userOneOrUserTwo := bson.M{"$or": bson.A{
+		bson.M{"user1.userRefId": 9},
+		bson.M{"user2.userRefId": 9},
+	},
+	}
+	// userOneOrUserTwo := bson.M{}
+	cursor, err := repo.ChatCollection.Find(ctx, userOneOrUserTwo)
 	if err != nil {
-		return make([]Chat, 0)
+		return chats
 	}
 	cursor.All(ctx, &chats)
 	return chats

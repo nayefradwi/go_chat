@@ -45,8 +45,13 @@ func (consumer *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
 }
 
 func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-	log.Print("consumer claims started")
+
+	log.Printf("listening for events in topic: %s; offset: %d; high-watermark offset: %d",
+		claim.Topic(),
+		claim.InitialOffset(), claim.InitialOffset(),
+	)
 	for message := range claim.Messages() {
+		log.Printf("message received: %v", message.Value)
 		consumer.ConsumedEvents <- message.Value
 		session.MarkMessage(message, "")
 	}

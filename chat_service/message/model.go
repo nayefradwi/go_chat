@@ -7,11 +7,12 @@ import (
 )
 
 const (
-	TEXT  = iota
-	IMAGE = iota
-	VIDEO = iota
-	FILE  = iota
-	URL   = iota
+	TEXT   = iota
+	IMAGE  = iota
+	VIDEO  = iota
+	FILE   = iota
+	URL    = iota
+	SYSTEM = iota
 )
 
 type Message struct {

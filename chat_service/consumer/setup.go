@@ -13,7 +13,7 @@ func NewConsumerClient(brokerList []string) sarama.ConsumerGroup {
 	config.Consumer.Offsets.Initial = sarama.OffsetNewest
 	client, err := sarama.NewConsumerGroup(brokerList, "ChatService", config)
 	if err != nil {
-		log.Fatalln("Failed to start Sarama producer:", err)
+		log.Fatalln("Failed to start Sarama consumer:", err)
 	}
 	log.Printf("connected to brokers %v", brokerList)
 	return client
